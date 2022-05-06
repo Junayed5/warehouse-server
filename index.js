@@ -18,6 +18,7 @@ async function run() {
     await client.connect();
     const furnitureCollection = client.db("warehouse").collection("furniture");
 
+    //Find Data to database
     app.get('/products', async(req,res) => {
       const query = {};
       const cursor = furnitureCollection.find(query);
@@ -31,6 +32,14 @@ async function run() {
       const product = await furnitureCollection.findOne(query);
       res.send(product);
     })
+
+    //Add data to data base
+    app.post('/products', async(req,res) => {
+      const item = req.body;
+      const result = await furnitureCollection.insertOne(item);
+      res.send(result);
+    })
+
   }
   finally{
 
