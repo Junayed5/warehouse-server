@@ -20,7 +20,8 @@ async function run() {
 
     //Find Data to database
     app.get('/products', async(req,res) => {
-      const query = {};
+      const email = req.query.email;
+      const query = {email};
       const cursor = furnitureCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
