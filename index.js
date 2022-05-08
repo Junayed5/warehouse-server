@@ -17,9 +17,17 @@ async function run() {
   try{
     await client.connect();
     const furnitureCollection = client.db("warehouse").collection("furniture");
+    const addItemCollection = client.db("warehouse").collection("newItem");
 
     //Find Data to database
     app.get('/products', async(req,res) => {
+      // const email = req.query.email;
+      const query = {};
+      const cursor = furnitureCollection.find(query);
+      const products = await cursor.toArray();
+      res.send(products);
+    })
+    app.get('/newItem', async(req,res) => {
       const email = req.query.email;
       const query = {email};
       const cursor = furnitureCollection.find(query);
@@ -40,9 +48,20 @@ async function run() {
       const result = await furnitureCollection.insertOne(item);
       res.send(result);
     })
+    app.post('/newItem', async(req,res) => {
+      const item = req.body;
+      const result = await addItemCollection.insertOne(item);
+      res.send(result);
+    })
 
     //Delete item
     app.delete('/products/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id:ObjectId(id)};
+      const result = await furnitureCollection.deleteOne(query);
+      res.send(result);
+    });
+    app.delete('/newItem/:id', async(req, res) => {
       const id = req.params.id;
       const query = {_id:ObjectId(id)};
       const result = await furnitureCollection.deleteOne(query);
